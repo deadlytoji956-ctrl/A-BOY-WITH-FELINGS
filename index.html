@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Boy with Feelings - Digital Book by Tojibiswas</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Montserrat:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #030712;
+            --text-color: #f3f4f6;
+            --accent-color: #f43f5e;
+            --card-bg: rgba(17, 24, 39, 0.75);
+            --font-size-multiplier: 1;
+        }
+
+        .theme-midnight {
+            --bg-color: #020617;
+            --text-color: #f1f5f9;
+            --accent-color: #f43f5e;
+            --card-bg: rgba(15, 23, 42, 0.75);
+        }
+
+        .theme-sepia {
+            --bg-color: #2b221a;
+            --text-color: #f7ebe1;
+            --accent-color: #e11d48;
+            --card-bg: rgba(43, 30, 24, 0.8);
+        }
+
+        .theme-charcoal {
+            --bg-color: #0f172a;
+            --text-color: #e2e8f0;
+            --accent-color: #fb7185;
+            --card-bg: rgba(30, 41, 59, 0.7);
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Montserrat', sans-serif;
+            transition: background-color 0.5s ease, color 0.5s ease;
+            overflow-x: hidden;
+        }
+
+        .serif-text {
+            font-family: 'Lora', serif;
+            font-size: calc(1rem * var(--font-size-multiplier));
+            line-height: 1.8;
+        }
+
+        .title-text {
+            font-family: 'Cinzel', serif;
+        }
+
+        .glassmorphism {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px rgba(255, 255, 255, 0.06) solid;
+        }
+
+        #particles-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            background: linear-gradient(135deg, rgba(244, 63, 94, 0.2), rgba(244, 63, 94, 0.05));
+            border-radius: 50%;
+            pointer-events: none;
+            animation: floatUp 15s linear infinite;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(105vh) translateX(0px) rotate(0deg);
+                opacity: 0;
+            }
+            10% { opacity: 0.4; }
+            90% { opacity: 0.4; }
+            100% {
+                transform: translateY(-5vh) translateX(100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .page-container { perspective: 1500px; }
+
+        .page-card {
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.6s ease;
+            backface-visibility: hidden;
+        }
+
+        .quote-glow {
+            box-shadow: inset 0 0 20px rgba(244, 63, 94, 0.05);
+            border-left: 4px solid var(--accent-color);
+        }
+    </style>
+</head>
+<body class="theme-midnight min-h-screen flex flex-col justify-between relative pb-6">
+
+    <!-- Particle Rain/Atmosphere Container -->
+    <div id="particles-container"></div>
+
+    <!-- Background Color Spots -->
+    <div class="fixed top-[-10%] right-[-10%] w-[60%] h-[60%] rounded-full bg-rose-950/10 blur-[130px] pointer-events-none"></div>
+    <div class="fixed bottom-[-10%] left-[-10%] w-[60%] h-[60%] rounded-full bg-blue-950/15 blur-[130px] pointer-events-none"></div>
+
+    <!-- Header Navigation -->
+    <header class="w-full z-50 glassmorphism sticky top-0 px-4 md:px-8 py-3.5 flex justify-between items-center border-b border-white/5 shadow-md">
+        <div class="flex items-center space-x-3">
+            <span class="text-rose-500 text-xl animate-pulse cursor-pointer" onclick="changePage(0)">📘</span>
+            <div>
+                <h1 class="title-text text-md md:text-lg font-bold tracking-widest text-rose-100">
+                    A BOY WITH FEELINGS
+                </h1>
+                <p class="text-[10px] tracking-wider text-gray-400 font-light -mt-1 hidden md:block">By Tojibiswas | Interactive Digital Novel</p>
+            </div>
+        </div>
+
+        <!-- Customization Controls Panel -->
+        <div class="flex items-center space-x-2 md:space-x-4">
+            <!-- Font Sizer -->
+            <div class="flex items-center bg-black/20 rounded-lg p-1 border border-white/5">
+                <button onclick="adjustFontSize(-0.1)" class="px-2 py-1 text-xs hover:text-rose-400 transition" title="Font Chhota Karein">A-</button>
+                <div class="h-3 w-[1px] bg-white/10"></div>
+                <button onclick="adjustFontSize(0.1)" class="px-2 py-1 text-xs hover:text-rose-400 transition" title="Font Bada Karein">A+</button>
+            </div>
+
+            <!-- Theme Switcher -->
+            <div class="relative group">
+                <button class="p-2 rounded-lg bg-black/20 hover:bg-black/40 border border-white/5 text-gray-300 hover:text-rose-400 transition flex items-center justify-center">
+                    <i data-lucide="palette" class="w-4 h-4"></i>
+                </button>
+                <div class="absolute right-0 mt-2 w-36 bg-gray-950/90 border border-white/10 rounded-xl shadow-2xl p-2 hidden group-hover:block z-50">
+                    <button onclick="setTheme('theme-midnight')" class="w-full text-left px-3 py-1.5 rounded-lg text-xs hover:bg-rose-950/30 text-rose-100 block">🌌 Midnight</button>
+                    <button onclick="setTheme('theme-sepia')" class="w-full text-left px-3 py-1.5 rounded-lg text-xs hover:bg-rose-950/30 text-rose-100 block">🍂 Autumn Sepia</button>
+                    <button onclick="setTheme('theme-charcoal')" class="w-full text-left px-3 py-1.5 rounded-lg text-xs hover:bg-rose-950/30 text-rose-100 block">🖤 Slate Charcoal</button>
+                </div>
+            </div>
+
+            <!-- Audio Player Button -->
+            <button id="musicToggle" class="p-2 rounded-lg bg-black/20 hover:bg-black/40 border border-white/5 text-gray-400 hover:text-rose-400 transition flex items-center justify-center">
+                <i data-lucide="music-2" class="w-4 h-4"></i>
+            </button>
+
+            <!-- Progress tracker -->
+            <div id="pageIndicator" class="text-[10px] md:text-xs tracking-wider uppercase text-rose-300 font-semibold bg-rose-950/30 border border-rose-500/20 px-3 py-1.5 rounded-lg hidden sm:block">
+                Cover Page
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="flex-grow flex items-center justify-center p-4 md:p-8 max-w-4xl mx-auto w-full z-10 page-container">
+        
+        <!-- ================= PAGE 0: PREMIUM COVER ================= -->
+        <div id="page-0" class="page-card w-full glassmorphism rounded-2xl p-6 md:p-12 shadow-2xl flex flex-col justify-between items-center text-center space-y-8 border-rose-950/30 min-h-[550px]">
+            <div class="space-y-4 pt-4">
+                <div class="flex items-center justify-center space-x-2">
+                    <div class="h-[1px] w-12 bg-gradient-to-r from-transparent to-rose-500"></div>
+                    <span class="text-rose-400 text-xs font-semibold tracking-widest uppercase">Pustak</span>
+                    <div class="h-[1px] w-12 bg-gradient-to-l from-transparent to-rose-500"></div>
+                </div>
+                <h2 class="title-text text-4xl md:text-6xl font-extrabold tracking-wide text-transparent bg-clip-text bg-gradient-to-b from-white via-rose-100 to-rose-300 mt-2">
+                    A Boy with Feelings
+                </h2>
+                <div class="flex flex-col items-center justify-center space-y-1">
+                    <p class="text-xs tracking-widest text-rose-300/80">Lekhak (Author): <span class="text-rose-400 font-bold text-sm bg-rose-950/40 border border-rose-500/20 px-3 py-1 rounded-full">Tojibiswas</span></p>
+                    <p class="text-[11px] text-gray-400 italic pt-1">Mukhya Patra: Toji 🧑‍💻 (RAW Agent) Aur Priti 🌸</p>
+                </div>
+            </div>
+
+            <!-- Book Art Frame -->
+            <div class="relative w-48 h-48 flex items-center justify-center group cursor-pointer" onclick="changePage(1)">
+                <div class="absolute inset-0 bg-gradient-to-r from-rose-500/10 to-blue-500/10 rounded-full blur-2xl group-hover:scale-110 transition-all duration-700"></div>
+                <div class="w-40 h-40 rounded-full border-2 border-rose-500/20 flex items-center justify-center relative z-10 transition-transform duration-500 group-hover:rotate-12">
+                    <div class="absolute -top-2 bg-rose-500/10 text-rose-400 text-[10px] px-2.5 py-0.5 rounded-full border border-rose-500/30">Read Book</div>
+                    <div class="text-center">
+                        <span class="text-5xl block mb-2 filter drop-shadow-[0_0_15px_rgba(244,63,94,0.5)]">📖</span>
+                        <p class="text-[10px] uppercase tracking-widest text-gray-400 font-semibold">Open Diary</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Start Button & Synopsis -->
+            <div class="space-y-4 w-full max-w-md pb-4">
+                <p class="serif-text italic text-xs text-gray-400 max-w-sm mx-auto leading-relaxed">
+                    "Jo desh ka sabse nishthur guptchar bana, par apne dil ka sach nahi mita saka... Yeh dastan hai Toji ki."
+                </p>
+                <button onclick="changePage(1)" class="w-full bg-gradient-to-r from-rose-600 to-rose-700 hover:from-rose-500 hover:to-rose-600 text-white font-medium py-3 px-6 rounded-xl transition-all transform hover:scale-[1.01] shadow-lg shadow-rose-950/40 flex items-center justify-center space-x-2">
+                    <span>Dastan Shuru Karein (Begin Story)</span>
+                    <i data-lucide="compass" class="w-4 h-4"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- ================= PAGE 1: CHAPTER 1 ================= -->
+        <div id="page-1" class="page-card w-full glassmorphism rounded-2xl p-6 md:p-10 shadow-2xl flex flex-col justify-between hidden space-y-6 min-h-[550px]">
+            <div class="flex justify-between items-center border-b border-white/5 pb-3">
+                <div class="flex items-center space-x-2">
+                    <span class="text-lg">🏫</span>
+                    <span class="text-xs uppercase tracking-widest font-bold text-rose-400">Adhyay 1</span>
+                </div>
+                <span class="serif-text italic text-xs text-rose-300/60 font-semibold">By Tojibiswas</span>
+            </div>
+
+            <div class="space-y-4 flex-grow my-2">
+                <h3 class="title-text text-2xl md:text-3xl font-bold text-rose-100">Kaksha ki Smriti</h3>
+                <p class="serif-text text-gray-300 text-justify">
+                    Vidyalaya (School) ka woh aakhri saal aur kaksha ka woh sabse pichla aasan (last bench)—Toji ke liye poori duniya bas yahin tak seemit thi. Priti jab bhi apne mitro ke sath baithkar hasti ya mand-mand muskuraati, toh uske mukh ki woh prasannata Toji ke hriday ko ek ajeeb sa anand de jaati.
+                </p>
+                <p class="serif-text text-gray-300 text-justify">
+                    Par agle hi kshan, us anand ke piche ek teevra vishaad (grief) chhipa hota tha—yeh dukh ki uski is hansi ka kaaran Toji nahi, balki koi aur tha. Jab saal khatam hua, sabhi chhatra haste hue apne naye jiwan ki taraf badh gaye, par Toji us aakhri bench par apni unhi yaadon ke sath akela maun baitha raha.
+                </p>
+            </div>
+
+            <div class="quote-glow bg-rose-950/10 p-5 rounded-xl border border-rose-500/10 relative my-1">
+                <span class="absolute top-1 left-2 text-rose-500/20 text-5xl serif-text">“</span>
+                <p class="serif-text text-rose-200/90 italic text-sm md:text-base text-center leading-loose relative z-10">
+                    "Mitro ke sang jab woh haas-parihaas karti thi, 🌸<br>
+                    Uske mukh ki mand-mand muskuraahat mere hriday ko anandit karti thi.<br>
+                    Par agle hi kshan ek tivra vishaad gher leta tha is aatma ko, 💔<br>
+                    Ki uski is prasannata ka kaaran koi aur tha, main nahi."
+                </p>
+            </div>
+        </div>
+
+        <!-- ================= PAGE 2: CHAPTER 2 ================= -->
+        <div id="page-2" class="page-card w-full glassmorphism rounded-2xl p-6 md:p-10 shadow-2xl flex flex-col justify-between hidden space-y-6 min-h-[550px]">
+            <div class="flex justify-between items-center border-b border-white/5 pb-3">
+                <div class="flex items-center space-x-2">
+                    <span class="text-lg">🕯️</span>
+                    <span class="text-xs uppercase tracking-widest font-bold text-rose-400">Adhyay 2</span>
+                </div>
+                <span class="serif-text italic text-xs text-rose-300/60 font-semibold">Hostel ka Kamra</span>
+            </div>
+
+            <div class="space-y-4 flex-grow my-2">
+                <h3 class="title-text text-2xl md:text-3xl font-bold text-rose-100">Hostel ka Kamra</h3>
+                <p class="serif-text text-gray-300 text-justify">
+                    Samay ka pahiya chalta raha, aur Toji naye sheher ke ek hostel ke kamre mein aa gaya. Raat ke andhkaar mein jab hostel ke baaki sabhi chhatra so jaate, tab Toji apne chaladoorvaash (phone) ko uthata aur us nili roshni mein Priti ke purane sandeshon (messages) aur uski chhavi (photo) ko niharta rehta. Uska moha (attachment) itna teevra tha ki woh un smritiyon ko mitaane ka saahas hi nahi juta pata tha.
+                </p>
+            </div>
+
+            <div class="quote-glow bg-rose-950/10 p-5 rounded-xl border border-rose-500/10 relative my-1">
+                <span class="absolute top-1 left-2 text-rose-500/20 text-5xl serif-text">“</span>
+                <p class="serif-text text-rose-200/90 italic text-sm md:text-base text-center leading-loose relative z-10">
+                    "Mitaane ka prayas toh tivra kiya is kaanpte haath ne, 📱<br>
+                    Par hriday ke is moha se main hamesha kaye liye haar gaya.<br>
+                    Ab toh keval tumhari smritiyon ke saagar mein hi dooba rehta hoon,<br>
+                    Apni hi yaadon ko sansaar bana kar, main is hostel ke kaksh mein jaagta raha." 🍂
+                </p>
+            </div>
+
+            <div class="text-center py-2.5 bg-rose-500/5 rounded-lg border border-rose-500/10">
+                <p class="serif-text text-rose-300 font-medium italic text-xs md:text-sm">
+                    "Tum meri woh sabse sundar bhool ho, jise main kabhi sudharna nahi chahta." ❤️‍🩹
+                </p>
+            </div>
+        </div>
+
+        <!-- ================= PAGE 3: CHAPTER 3 ================= -->
+        <div id="page-3" class="page-card w-full glassmorphism rounded-2xl p-6 md:p-10 shadow-2xl flex flex-col justify-between hidden space-y-6 min-h-[550px]">
+            <div class="flex justify-between items-center border-b border-white/5 pb-3">
+                <div class="flex items-center space-x-2">
+                    <span class="text-lg">🪖</span>
+                    <span class="text-xs uppercase tracking-widest font-bold text-rose-400">Adhyay 3</span>
+                </div>
+                <span class="serif-text italic text-xs text-rose-300/60 font-semibold">Kala aur Kartavya</span>
+            </div>
+
+            <div class="space-y-4 flex-grow my-2">
+                <h3 class="title-text text-2xl md:text-3xl font-bold text-rose-100">Kala aur Kartavya</h3>
+                <p class="serif-text text-gray-300 text-justify">
+                    Toji ne apne is dard ko shabdon mein dhaalna shuru kiya. Jab woh manch (stage) par khada hokar apni shayari padhta, toh poora sabhagrah taaliyon ki goonj se bhar jata. Log use ek behtareen kavi samajhte, par koi bhi Toji ke us sachhe dard ko nahi dekh paata tha. 
+                </p>
+                <p class="serif-text text-gray-300 text-justify">
+                    Apne is akelepan aur maut ke bhay se mukt hone ke kaaran, woh desh ki sabse badi guptchar agency RAW (Research and Analysis Wing) mein shamil ho gaya. Ab Toji ek nishthur aur nidar guptchar (secret agent) ban chuka tha, par RAW ke us andhkaar mein bhi, uske dil ka satya nahi badla.
+                </p>
+            </div>
+
+            <div class="quote-glow bg-rose-950/10 p-5 rounded-xl border border-rose-500/10 relative my-1">
+                <span class="absolute top-1 left-2 text-rose-500/20 text-5xl serif-text">“</span>
+                <p class="serif-text text-rose-200/90 italic text-sm md:text-base text-center leading-loose relative z-10">
+                    "Sansaar ke liye main ek nishthur guptchar hoon mahaan, 🪖<br>
+                    Desh ki raksha mein samarpit hai meri yeh jaan.<br>
+                    Par RAW ke is gupt andhkaar mein bhi ek satya nahi badla,<br>
+                    Is 'Boy with Feelings' ke hriday mein aaj bhi hai keval tumhara sthan." 💔
+                </p>
+            </div>
+        </div>
+
+        <!-- ================= PAGE 4: EPILOGUE ================= -->
+        <div id="page-4" class="page-card w-full glassmorphism rounded-2xl p-6 md:p-10 shadow-2xl flex flex-col justify-between hidden space-y-6 min-h-[550px]">
+            <div class="flex justify-between items-center border-b border-white/5 pb-3">
+                <div class="flex items-center space-x-2">
+                    <span class="text-lg">📜</span>
+                    <span class="text-xs uppercase tracking-widest font-bold text-rose-400">Upasanhara</span>
+                </div>
+                <span class="serif-text italic text-xs text-rose-300/60 font-semibold">Smriti ka Sakshatkaar</span>
+            </div>
+
+            <div class="space-y-4 flex-grow my-2">
+                <h3 class="title-text text-2xl md:text-3xl font-bold text-rose-100">Smriti ka Sakshatkaar</h3>
+                <p class="serif-text text-gray-300 text-justify">
+                    Varsho beet gaye. Priti ab apne jeevan mein aage badh chuki thi. Ek din, ek purane pustakalaya (library) mein uski drishti ek gumnam kavita-sangrah par padi, jiska naam tha—<span class="text-rose-400 font-semibold">"A Boy with Feelings"</span>. 
+                </p>
+                <p class="serif-text text-gray-300 text-justify">
+                    Jaise hi usne kaanpte haathon se use khola, use samajh aaya ki desh ka sabse nishthur guptchar Toji, asal mein aaj bhi uski yaadon ka kaidi tha. Priti ke netron se ashru beh nikle, par Toji desh ki gupt vaadiyon mein kahin vileen ho chuka tha.
+                </p>
+            </div>
+
+            <div class="quote-glow bg-rose-950/20 p-5 rounded-xl border border-rose-500/25 relative my-1">
+                <p class="serif-text text-rose-100 italic text-sm md:text-base text-center leading-loose relative z-10">
+                    "Priti ne jab us pustika ke panno ko khola, 📖<br>
+                    Toji ka likha har ek akshar usse mukhrit ho bola.<br>
+                    <span class="text-rose-400 font-sans font-semibold not-italic tracking-wider text-xs bg-rose-950/70 border border-rose-900/40 px-3 py-1 rounded-full inline-block my-1 animate-pulse">
+                        🎵 'Vekhi javan teri raavan, tethon door na javan...'
+                    </span><br>
+                    Isi Udarian ke sur mein uska dil har pal tha roya.<br>
+                    Woh desh ki raksha mein vileen tha RAW ki vaadiyon mein, 🪖<br>
+                    Par uska hriday aaj bhi bandhi tha keval uski yaadon ki galiyon mein." 🌌
+                </p>
+            </div>
+
+            <!-- Interactive Reader Diary Guestbook -->
+            <div class="mt-4 border-t border-white/5 pt-4">
+                <p class="text-[11px] text-gray-400 uppercase tracking-widest font-semibold text-center mb-2">Leave your feeling in Toji's Diary</p>
+                <div class="flex space-x-2">
+                    <input type="text" id="feelingInput" placeholder="Aapki feelings yahan likhein..." class="flex-grow bg-black/30 border border-white/10 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-rose-500/50 text-gray-200">
+                    <button onclick="saveFeeling()" class="bg-rose-600 hover:bg-rose-500 text-white text-xs px-4 py-2 rounded-xl font-medium transition flex items-center space-x-1">
+                        <span>Save</span>
+                        <i data-lucide="send" class="w-3.5 h-3.5"></i>
+                    </button>
+                </div>
+                <div id="feelingStatus" class="text-[10px] text-rose-400 text-center mt-1 hidden"></div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Interactive Navigation Control Bar -->
+    <footer class="w-full z-40 glassmorphism py-4 px-4 md:px-8 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="flex items-center space-x-1 order-2 md:order-1 flex-wrap justify-center">
+            <button onclick="changePage(0)" id="nav-btn-0" class="px-2.5 py-1.5 rounded-lg text-xs font-semibold tracking-wider hover:bg-white/5 transition bg-rose-500/10 text-rose-400">Cover</button>
+            <span class="text-white/10">|</span>
+            <button onclick="changePage(1)" id="nav-btn-1" class="px-2.5 py-1.5 rounded-lg text-xs font-semibold tracking-wider hover:bg-white/5 transition text-gray-400">Adhyay 1</button>
+            <button onclick="changePage(2)" id="nav-btn-2" class="px-2.5 py-1.5 rounded-lg text-xs font-semibold tracking-wider hover:bg-white/5 transition text-gray-400">Adhyay 2</button>
+            <button onclick="changePage(3)" id="nav-btn-3" class="px-2.5 py-1.5 rounded-lg text-xs font-semibold tracking-wider hover:bg-white/5 transition text-gray-400">Adhyay 3</button>
+            <button onclick="changePage(4)" id="nav-btn-4" class="px-2.5 py-1.5 rounded-lg text-xs font-semibold tracking-wider hover:bg-white/5 transition text-gray-400">Epilogue</button>
+        </div>
+
+        <div class="flex items-center space-x-4 order-1 md:order-2 w-full md:w-auto justify-between md:justify-end">
+            <button id="prevBtn" onclick="prevPage()" class="opacity-50 cursor-not-allowed bg-black/30 hover:bg-black/50 text-gray-300 p-2.5 rounded-xl transition border border-white/5 flex items-center space-x-1 text-xs font-medium" disabled>
+                <i data-lucide="arrow-left-to-line" class="w-4 h-4"></i>
+                <span>Peeche</span>
+            </button>
+            <button id="nextBtn" onclick="nextPage()" class="bg-gradient-to-r from-rose-600 to-rose-700 hover:from-rose-500 hover:to-rose-600 text-white p-2.5 rounded-xl transition shadow-lg shadow-rose-950/30 flex items-center space-x-1 text-xs font-medium border border-rose-500/20">
+                <span>Aage Badhein</span>
+                <i data-lucide="arrow-right-to-line" class="w-4 h-4"></i>
+            </button>
+        </div>
+    </footer>
+
+    <!-- Audio Player Background Music Source -->
+    <audio id="ambientBgm" loop src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3"></audio>
+
+    <script>
+        lucide.createIcons();
+
+        let currentPage = 0;
+        const totalPages = 4;
+        let isMusicPlaying = false;
+        const bgm = document.getElementById('ambientBgm');
+        const musicToggle = document.getElementById('musicToggle');
+        const pageIndicator = document.getElementById('pageIndicator');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        let fontSizeMultiplier = 1;
+
+        function generateParticles() {
+            const container = document.getElementById('particles-container');
+            container.innerHTML = ''; 
+            const particleCount = 20;
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                const size = Math.random() * 8 + 4;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.left = `${Math.random() * 100}vw`;
+                particle.style.animationDelay = `${Math.random() * 15}s`;
+                particle.style.animationDuration = `${Math.random() * 10 + 10}s`;
+                container.appendChild(particle);
+            }
+        }
+
+        function adjustFontSize(delta) {
+            fontSizeMultiplier = Math.max(0.8, Math.min(1.4, fontSizeMultiplier + delta));
+            document.documentElement.style.setProperty('--font-size-multiplier', fontSizeMultiplier);
+        }
+
+        function setTheme(themeName) {
+            document.body.className = `${themeName} min-h-screen flex flex-col justify-between relative pb-6`;
+        }
+
+        musicToggle.addEventListener('click', () => {
+            if (isMusicPlaying) {
+                bgm.pause();
+                musicToggle.innerHTML = '<i data-lucide="music-2" class="w-4 h-4"></i>';
+                musicToggle.classList.remove('text-rose-400', 'bg-rose-950/40');
+            } else {
+                bgm.play().catch(err => console.log("Audio trigger context needed."));
+                musicToggle.innerHTML = '<i data-lucide="volume-2" class="w-4 h-4"></i>';
+                musicToggle.classList.add('text-rose-400', 'bg-rose-950/40');
+            }
+            isMusicPlaying = !isMusicPlaying;
+            lucide.createIcons();
+        });
+
+        function changePage(pageIndex) {
+            const currentCard = document.getElementById(`page-${currentPage}`);
+            const targetCard = document.getElementById(`page-${pageIndex}`);
+            if (!targetCard) return;
+            if (currentCard) currentCard.classList.add('hidden');
+            targetCard.classList.remove('hidden');
+            
+            for (let i = 0; i <= totalPages; i++) {
+                const navBtn = document.getElementById(`nav-btn-${i}`);
+                if (navBtn) {
+                    if (i === pageIndex) {
+                        navBtn.className = "px-2.5 py-1.5 rounded-lg text-xs font-semibold tracking-wider transition bg-rose-500/10 text-rose-400 border border-rose-500/20";
+                    } else {
+                        navBtn.className = "px-2.5 py-1.5 rounded-lg text-xs font-semibold tracking-wider hover:bg-white/5 transition text-gray-400";
+                    }
+                }
+            }
+            currentPage = pageIndex;
+            updateControlUI();
+        }
+
+        function updateControlUI() {
+            if (currentPage === 0) {
+                pageIndicator.innerText = "Cover Page";
+                prevBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                prevBtn.disabled = true;
+                nextBtn.innerHTML = '<span>Kholen (Open)</span> <i data-lucide="arrow-right-to-line" class="w-4 h-4"></i>';
+            } else if (currentPage === totalPages) {
+                pageIndicator.innerText = "Epilogue";
+                prevBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                prevBtn.disabled = false;
+                nextBtn.innerHTML = '<span>Start Over</span> <i data-lucide="rotate-ccw" class="w-4 h-4"></i>';
+            } else {
+                pageIndicator.innerText = `Adhyay ${currentPage} / ${totalPages}`;
+                prevBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                prevBtn.disabled = false;
+                nextBtn.innerHTML = '<span>Aage Badhein</span> <i data-lucide="arrow-right-to-line" class="w-4 h-4"></i>';
+            }
+            lucide.createIcons();
+        }
+
+        function nextPage() {
+            if (currentPage < totalPages) changePage(currentPage + 1);
+            else changePage(0);
+        }
+
+        function prevPage() {
+            if (currentPage > 0) changePage(currentPage - 1);
+        }
+
+        function saveFeeling() {
+            const input = document.getElementById('feelingInput');
+            const status = document.getElementById('feelingStatus');
+            if (!input.value.trim()) return;
+            status.classList.remove('hidden');
+            status.innerText = "Aapki feeling Tojibiswas ki diary me save ho gayi... ❤️";
+            input.value = '';
+            setTimeout(() => status.classList.add('hidden'), 4000);
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT') return;
+            if (e.key === 'ArrowRight') nextPage();
+            if (e.key === 'ArrowLeft') prevPage();
+        });
+
+        window.onload = generateParticles;
+    </script>
+</body>
+</html>
